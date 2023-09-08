@@ -1,9 +1,0 @@
-{
-    "framework": "django",
-    "build": {
-      "target": "build.sh"
-    },
-    "functions": {
-      "main": "wsgi.py"
-    }
-  }
