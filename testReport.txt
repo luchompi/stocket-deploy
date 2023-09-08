@@ -1,0 +1,21 @@
+============================= test session starts =============================
+platform win32 -- Python 3.11.4, pytest-7.4.0, pluggy-1.2.0
+django: settings: core.settings (from ini)
+rootdir: C:\Users\lpich\GitHub\Stocket\server
+configfile: pytest.ini
+plugins: django-4.5.2
+collected 33 items
+
+apps\Empresa\tests.py ....                                               [ 12%]
+apps\Gestion\tests.py .........                                          [ 39%]
+apps\Inventario\tests.py .....                                           [ 54%]
+apps\Personas\tests.py ...........                                       [ 87%]
+apps\accounts\tests.py ....                                              [100%]
+
+============================== warnings summary ===============================
+..\..\envs\Stocket\Lib\site-packages\rest_framework_simplejwt\__init__.py:1
+  C:\Users\lpich\GitHub\envs\Stocket\Lib\site-packages\rest_framework_simplejwt\__init__.py:1: DeprecationWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html
+    from pkg_resources import DistributionNotFound, get_distribution
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 33 passed, 1 warning in 3.46s ========================
