@@ -15,7 +15,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = ['*','127.0.0.1', '.vercel.app']
+ALLOWED_HOSTS = ['*']
 
 
 INSTALLED_APPS = [
@@ -77,14 +77,12 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
-       
         ####Env config
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('DB_NAME'),
         'USER':os.getenv('DB_USER'),
         'PASSWORD':os.getenv('DB_PASSWORD'),
         'HOST':os.getenv('DB_HOST'),
-        #'HOST':'localhost',
         'PORT':os.getenv('DB_PORT')
         
         ####Local config
