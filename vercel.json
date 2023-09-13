@@ -11,10 +11,5 @@
         "dest": "core/wsgi.py"
       }
     ],
-    "commands": [
-      "python -m django.core.management.call_command \"createsuperuser --username root --password root123\"",
-      "python manage.py makemigrations",
-      "python manage.py migrate",
-      "python manage.py runserver"
-    ]
+    "commandsFile": "./vercel.commands.json"
   }
