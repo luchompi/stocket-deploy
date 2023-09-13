@@ -204,5 +204,4 @@ AUTH_USER_MODEL = 'accounts.UserAccount'
 
 ### Email config
 EMAIL_BACKEND = "mailersend.backends.MailerSendBackend"
-MAILERSEND_API_KEY = "YOUR_API_KEY"
-MAILERSEND_DOMAIN = "YOUR_DOMAIN"
+MAILERSEND_API_KEY = os.getenv('EMAIL_API')
