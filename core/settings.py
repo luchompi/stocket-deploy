@@ -77,12 +77,14 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
+       
         ####Env config
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('DB_NAME'),
         'USER':os.getenv('DB_USER'),
         'PASSWORD':os.getenv('DB_PASSWORD'),
         'HOST':os.getenv('DB_HOST'),
+        #'HOST':'localhost',
         'PORT':os.getenv('DB_PORT')
         
         ####Local config
@@ -203,5 +205,10 @@ DJOSER = {
 AUTH_USER_MODEL = 'accounts.UserAccount'
 
 ### Email config
-EMAIL_BACKEND = "mailersend.backends.MailerSendBackend"
-MAILERSEND_API_KEY = os.getenv('EMAIL_API')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
