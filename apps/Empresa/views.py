@@ -1,4 +1,4 @@
-from core.permissions import isAdminOrSuperuser, isEncargado
+from core.permissions import admin_or_superuser_required
 from django.shortcuts import get_object_or_404, get_list_or_404
 from rest_framework import status
 from rest_framework.decorators import permission_classes
@@ -11,13 +11,13 @@ from django.db.models import Q
 
 # Empresa Controllers
 class EmpresaIndex(APIView):
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_required
     def get(self, request, format=None):
         empresas = Empresa.objects.all()
         serializer = EmpresaSerializer(empresas, many=True)
         return Response(serializer.data)
 
-    @permission_classes([isAdminOrSuperuser])
+    @admin_or_superuser_required
     def post(self, request, format=None):
         serializer = EmpresaSerializer(data=request.data)
         if Empresa.objects.count() == 1:
@@ -30,7 +30,7 @@ class EmpresaIndex(APIView):
 
 class EmpresaDetails(APIView):
 
-    @permission_classes([isAdminOrSuperuser])
+    @admin_or_superuser_required
     def put(self, request, pk, format=None):
         empresa = get_object_or_404(Empresa, id=pk)
         serializer = EmpresaSerializer(empresa, data=request.data, partial=True)
@@ -42,13 +42,13 @@ class EmpresaDetails(APIView):
 
 # Sede Controllers
 class SedeIndex(APIView):
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_required
     def get(self, request, NIT, format=None):
         sedes = get_list_or_404(Sede, empresa__NIT=NIT)
         serializer = SedeSerializer(sedes, many=True)
         return Response(serializer.data)
 
-    @permission_classes([isAdminOrSuperuser])
+    @admin_or_superuser_required
     def post(self, request, NIT, format=None):
         myData = request.data.copy()
         q = Sede.objects.filter(name=myData['name'], empresa__NIT=NIT)
@@ -64,13 +64,13 @@ class SedeIndex(APIView):
             return Response({"error": "Ya existe una sede con ese nombre."}, status=status.HTTP_400_BAD_REQUEST)
 
 class SedeDetails(APIView):
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_required
     def get(self, request, NIT, pk, format=None):
         sede = get_object_or_404(Sede, id=pk, empresa=NIT)
         serializer = SedeSerializer(sede)
         return Response(serializer.data)
     
-    @permission_classes([isAdminOrSuperuser])
+    @admin_or_superuser_required
     def put(self, request, pk,NIT, format=None):
         sede = get_object_or_404(Sede, id=pk, empresa__NIT=NIT)
         serializer = SedeSerializer(sede, data=request.data, partial=True)
@@ -78,7 +78,7 @@ class SedeDetails(APIView):
             serializer.save()
             return Response(status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    @permission_classes([isAdminOrSuperuser])
+    @admin_or_superuser_required
     def delete(self, request, pk,NIT, format=None):
         try:
             sede = get_object_or_404(Sede, id=pk,empresa__NIT=NIT)
@@ -88,7 +88,7 @@ class SedeDetails(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 class SedeSearch(APIView):
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_required
     def get(self, request, NIT, search, format=None):
         sedes = Sede.objects.filter(Q(name__icontains=search) | Q(id__icontains=search),empresa__NIT=NIT, )
         serializer = SedeSerializer(sedes, many=True)
@@ -96,13 +96,13 @@ class SedeSearch(APIView):
 
 #Dependencia controllers
 class DependenciaIndex(APIView):
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_required
     def get(self, request, format=None):
         sedes = Dependencia.objects.order_by('-id')[:5]
         serializer = DependenciaSerializer(sedes, many=True)
         return Response(serializer.data)
 
-    @permission_classes([isAdminOrSuperuser])
+    @admin_or_superuser_required
     def post(self, request, format=None):
         serializer = DependenciaSerializer(data=request.data)
         if serializer.is_valid():
@@ -111,12 +111,12 @@ class DependenciaIndex(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class DependenciaDetails(APIView):
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_required
     def get(self, request, pk, format=None):
         dependencia = get_object_or_404(Dependencia, id=pk)
         serializer = DependenciaSerializer(dependencia)
         return Response(serializer.data)
-    @permission_classes([isAdminOrSuperuser])
+    @admin_or_superuser_required
     def put(self,request,pk,format=None):
         dependencia = get_object_or_404(Dependencia, id=pk)
         serializer = DependenciaSerializer(dependencia, data=request.data, partial=True)
@@ -124,7 +124,7 @@ class DependenciaDetails(APIView):
             serializer.save()
             return Response(status=status.HTTP_200_OK)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-    @permission_classes([isAdminOrSuperuser])
+    @admin_or_superuser_required
     def delete(self,request,pk,format=None):
         try:
             dependencia = get_object_or_404(Dependencia, id=pk)
@@ -134,20 +134,20 @@ class DependenciaDetails(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
         
 class SearchDependencia(APIView):
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_required
     def get(self, request, search, format=None):
         dependencias = Dependencia.objects.filter(Q(name__icontains=search) | Q(id__icontains=search))
         serializer = DependenciaSerializer(dependencias, many=True)
         return Response(serializer.data)
 #Sedes por dependencias
 class SedeByDependencia(APIView):
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_required
     def get(self, request, pk, format=None):
         sedes = get_list_or_404(SedeDependencia, sede=pk)
         serializer = SedeDependenciaSerializer(sedes, many=True)
         return Response(serializer.data)
     
-    @permission_classes([isAdminOrSuperuser])
+    @admin_or_superuser_required
     def post(self, request, pk, format=None):
         data_list = request.data['_value']
         try:
@@ -165,7 +165,7 @@ class SedeByDependencia(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class SedeByDependenciaDetails(APIView):
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_required
     def delete(self, request, sede_id, dep_id, format=None):
         if queryset := SedeDependencia.objects.get(id=dep_id, sede__id=sede_id):
             queryset.delete()
@@ -174,7 +174,7 @@ class SedeByDependenciaDetails(APIView):
     
 
 class obtenerDependenciasParaSede(APIView):
-    permission_classes = [isAdminOrSuperuser | isEncargado]
+    @admin_or_superuser_required
     def get(self, request, sede_id, format=None):
         #Consulto las dependencias que tiene la sede
         dependencias = SedeDependencia.objects.filter(sede__id=sede_id)

@@ -1,4 +1,4 @@
-from core.permissions import isAdminOrSuperuser, isEncargado
+from core.permissions import admin_or_superuser_or_encargado_required
 from django.db import transaction
 from django.shortcuts import get_object_or_404, get_list_or_404
 from rest_framework import status
@@ -13,7 +13,7 @@ from .serializers import CategoriaSerializer, MarcaSerializer, ReferenciaStoreSe
 
 # Controladores de marcas
 class MarcaSearch(APIView):
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_or_encargado_required
     def get(self, request, pk, format=None):
         queryset = Marca.objects.filter(name__icontains=pk)
         serializer = MarcaSerializer(queryset, many=True)
@@ -21,13 +21,13 @@ class MarcaSearch(APIView):
 
 
 class MarcaIndex(APIView):
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_or_encargado_required
     def get(self, request, format=None):
         queryset = Marca.objects.order_by('-created_at')[:5]
         serializer = MarcaSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_or_encargado_required
     def post(self, request, format=None):
         serializer = MarcaSerializer(data=request.data)
         if serializer.is_valid():
@@ -37,13 +37,13 @@ class MarcaIndex(APIView):
 
 
 class MarcaDetail(APIView):
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_or_encargado_required
     def get(self, request, id, format=None):
         queryset = get_object_or_404(Marca, pk=id)
         serializer = MarcaSerializer(queryset)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_or_encargado_required
     def put(self, request, id, format=None):
         marca = get_object_or_404(Marca, pk=id)
         serializer = MarcaSerializer(marca, data=request.data)
@@ -52,7 +52,7 @@ class MarcaDetail(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_or_encargado_required
     def delete(self, request, id, format=None):
         marca = get_object_or_404(Marca, pk=id)
         marca.delete()
@@ -61,13 +61,13 @@ class MarcaDetail(APIView):
 
 # controladores de Categorias
 class CategoriaIndex(APIView):
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_or_encargado_required
     def get(self, request, format=None):
         queryset = Categoria.objects.order_by('-created_at')[:5]
         serializer = CategoriaSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_or_encargado_required
     def post(self, request, format=None):
         serializer = CategoriaSerializer(data=request.data)
         if serializer.is_valid():
@@ -77,7 +77,7 @@ class CategoriaIndex(APIView):
 
 
 class CategoriaSearch(APIView):
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_or_encargado_required
     def get(self, request, pk, format=None):
         queryset = Categoria.objects.filter(name__icontains=pk)
         serializer = CategoriaSerializer(queryset, many=True)
@@ -85,13 +85,13 @@ class CategoriaSearch(APIView):
 
 
 class CategoriaDetail(APIView):
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_or_encargado_required
     def delete(self, request, pk, format=None):
         queryset = get_object_or_404(Categoria, pk=pk)
         queryset.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_or_encargado_required
     def put(self, request, pk, format=None):
         queryset = get_object_or_404(Categoria, pk=pk)
         serializer = CategoriaSerializer(queryset, data=request.data)
@@ -100,7 +100,7 @@ class CategoriaDetail(APIView):
             return Response(status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_or_encargado_required
     def get(self, request, pk, format=None):
         queryset = get_object_or_404(Categoria, pk=pk)
         serializer = CategoriaSerializer(queryset)
@@ -109,13 +109,13 @@ class CategoriaDetail(APIView):
 
 # Referencias Controller
 class ReferenciaIndex(APIView):
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_or_encargado_required
     def get(self, request, pk, format=None):
         queryset = Referencia.objects.filter(categoria__id=pk).order_by('-timestamps')[:5]
         serializer = ReferenciaSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_or_encargado_required
     def post(self, request, pk, format=None):
         data_list = request.data
         try:
@@ -135,7 +135,7 @@ class ReferenciaIndex(APIView):
 
 
 class ReferenciaDetail(APIView):
-    @permission_classes([isAdminOrSuperuser | isEncargado])
+    @admin_or_superuser_or_encargado_required
     def delete(self, request, pk, format=None):
         queryset = get_object_or_404(Referencia, pk=pk)
         queryset.delete()
@@ -143,7 +143,7 @@ class ReferenciaDetail(APIView):
 
 
 class ReferenciaFilter(APIView):
-    permission_classes = [isAdminOrSuperuser | isEncargado]
+    @admin_or_superuser_or_encargado_required
 
     def get(self, request, marca, categoria, format=None):
         queryset = get_list_or_404(Referencia, categoria__name=categoria, marca__name__icontains=marca)
@@ -153,7 +153,7 @@ class ReferenciaFilter(APIView):
 
 # Elemento controller
 class ElementoIndex(APIView):
-    permission_classes = [isAdminOrSuperuser | isEncargado]
+    @admin_or_superuser_or_encargado_required
 
     def get(self, request, format=None):
         queryset = Elemento.objects.order_by('-created_at')[:5]
@@ -169,7 +169,7 @@ class ElementoIndex(APIView):
 
 
 class ElementoSearch(APIView):
-    permission_classes = [isAdminOrSuperuser | isEncargado]
+    @admin_or_superuser_or_encargado_required
 
     def get(self, request, pk, format=None):
         queryset = Elemento.objects.filter(placa__icontains=pk)
@@ -178,7 +178,7 @@ class ElementoSearch(APIView):
 
 
 class ElementoDetail(APIView):
-    permission_classes = [isAdminOrSuperuser | isEncargado]
+    @admin_or_superuser_or_encargado_required
 
     def get(self, request, pk, format=None):
         queryset = get_object_or_404(Elemento, placa=pk)
@@ -195,7 +195,7 @@ class ElementoDetail(APIView):
 
 
 class ElementoABaja(APIView):
-    permission_classes = [isAdminOrSuperuser | isEncargado]
+    @admin_or_superuser_or_encargado_required
 
     def put(self, request, pk, format=None):
         q = Elemento.objects.get(placa=pk)

@@ -16,7 +16,6 @@ class UserAccountManager(BaseUserManager):
     def create_superuser(self,email,password,**extra_fields):
         extra_fields.setdefault('is_staff',True)
         extra_fields.setdefault('is_superuser',True)
-        extra_fields.setdefault('role','Administrador')
         
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True')
@@ -34,7 +33,6 @@ class UserAccount(AbstractBaseUser,PermissionsMixin):
     last_name = models.CharField(max_length=255, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    role = models.CharField(max_length=255, null=True,blank=True)    
     phone = models.CharField(max_length=255, null=True,blank=True)
     address = models.CharField(max_length=255, null=True,blank=True)
     city = models.CharField(max_length=255, default='Riohacha')
