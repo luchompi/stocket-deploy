@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin,Group
 
 class UserAccountManager(BaseUserManager):
     def create_user(self,email,password=None,**extra_fields):
@@ -39,7 +39,7 @@ class UserAccount(AbstractBaseUser,PermissionsMixin):
     address = models.CharField(max_length=255, null=True,blank=True)
     city = models.CharField(max_length=255, default='Riohacha')
     uid = models.CharField(max_length=255,unique=True,null=True,blank=True)
-    
+    groups = models.ManyToManyField(Group, blank=True, related_name="user_groups")
     objects = UserAccountManager()
     
     USERNAME_FIELD = 'username'

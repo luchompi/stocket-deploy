@@ -10,6 +10,7 @@ class UserCreateSerializer(UserCreateSerializer):
         fields = ('id','email','username','password')
         
 class UserSerializer(serializers.ModelSerializer):
+    groups = serializers.StringRelatedField(many=True)
     class Meta:
         model = User
-        fields = ('id','email','username','first_name','last_name','address','city','uid','phone','is_superuser')
+        fields = ('id','email','username','first_name','last_name','address','city','uid','phone','is_superuser','groups')
