@@ -129,19 +129,18 @@ class SearchElementByArgs(APIView):
 ####CONTROLADORES DE MANTENIMIENTO
 class MantenimientoIndex(APIView):
     @admin_or_superuser_or_encargado_required
-
     def get(self, request):
-        mantenimiento = Mantenimiento.objects.order_by('-timestamps')[:5]
+        mantenimiento = Mantenimiento.objects.filter(estado='En Proceso')[:10]
         serializer = MantenimientoSerializer(mantenimiento, many=True)
+        print(mantenimiento)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class MantenimientoCreate(APIView):
     @admin_or_superuser_or_encargado_required
-
     def post(self, request, pk, format=None):
         queryset = Elemento.objects.get(placa=pk)
-        q = Mantenimiento(elemento=queryset, user=request.user.username, estado='En mantenimiento',
+        q = Mantenimiento(elemento=queryset, user=request.user.username, estado='En Progreso',
                           descripcion=request.data['details'])
         q.save()
         return Response(status=status.HTTP_201_CREATED)
@@ -149,7 +148,6 @@ class MantenimientoCreate(APIView):
 
 class MantenimientoDetails(APIView):
     @admin_or_superuser_or_encargado_required
-
     def get(self, request, pk, format=None):
         queryset = Mantenimiento.objects.get(PID=pk)
         serializer = MantenimientoSerializer(queryset)
@@ -172,6 +170,12 @@ class MantenimientoDetails(APIView):
         elemento.save()
         return Response(status=status.HTTP_200_OK)
 
+class SearchMantenimiento(APIView):
+    @admin_or_superuser_or_encargado_required
+    def get(self,request,pk,format=None):
+        queryset = Mantenimiento.objects.filter(Q(PID__icontains=pk)|Q(elemento__placa__icontains=pk))
+        serializer = MantenimientoSerializer(queryset,many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
 
 """
 Controladores para Bajas
@@ -180,7 +184,6 @@ Controladores para Bajas
 
 class BajaIndex(APIView):
     @admin_or_superuser_or_encargado_required
-
     def get(self, request):
         baja = Baja.objects.order_by('-timestamps')[:5]
         serializer = BajaSerializer(baja, many=True)
@@ -189,7 +192,6 @@ class BajaIndex(APIView):
 
 class BajaCreate(APIView):
     @admin_or_superuser_or_encargado_required
-
     def get(self, request, format=None):
         queryset = Elemento.objects.filter(
             Q(estado__contains='Para cambio') | Q(estado__contains='Dañado') | Q(estado__contains='Para baja'))
@@ -212,7 +214,6 @@ class BajaCreate(APIView):
 
 class BajaDetails(APIView):
     @admin_or_superuser_or_encargado_required
-
     def get(self, request, pk, format=None):
         queryset = DetalleBaja.objects.filter(baja__PID=pk)
         serializer = DetalleBajaSerializer(queryset, many=True)
@@ -261,6 +262,6 @@ class ComprobarMantenimiento(APIView):
     @admin_or_superuser_or_encargado_required
 
     def get(self, request, format=None):
-        queryset = Mantenimiento.objects.filter(estado='En mantenimiento')
+        queryset = Mantenimiento.objects.filter(estado='En Progreso')
         serializer = MantenimientoSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

@@ -25,6 +25,8 @@ urlpatterns = [
     path('mantenimientos/create/<int:pk>/', views.MantenimientoCreate.as_view()),
     # Obtener detalles de un mantenimiento
     path('mantenimientos/details/<int:pk>/', views.MantenimientoDetails.as_view()),
+    #Buscar mantenimientos
+    path('mantenimientos/search/<int:pk>/', views.SearchMantenimiento.as_view()),
 
     # Obtener elementos cuyo estado sea En mantenimiento
     path('mantenimientos/elementos/en_proceso/', views.ComprobarMantenimiento.as_view()),
